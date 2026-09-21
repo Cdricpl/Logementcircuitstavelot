@@ -6,6 +6,21 @@ le Grand Prix de Belgique (Spa-Francorchamps).
 Tout le site tient dans `index.html` : styles, photos (en base64), carte
 Leaflet et scripts sont embarqués, il n'y a aucune dépendance à installer.
 
+## Identité visuelle
+
+Reprise des affiches de location : fond nuit (`#0E1519`), rouge de marque
+(`#E63946`), titres manuscrits (Kaushan Script) soulignés d'un trait rouge,
+capitales condensées espacées (Saira Semi Condensed) pour les accroches et
+texte courant en Libre Franklin. La page est en thème sombre unique : elle ne
+suit plus la préférence clair/sombre du système.
+
+Les couleurs sont définies en variables CSS sur `:root`, au début de
+`index.html` : changer `--red` suffit à rehabiller tout le site.
+
+Les équipements listés (`<ul class="feat">`) reprennent uniquement ce que la
+page décrit déjà. Le Wi-Fi, le parking privé et le couchage pour quatre qui
+figurent sur les affiches n'y sont pas : à ajouter si c'est exact.
+
 ## Mettre le site à jour
 
 1. Modifier `index.html`.

@@ -1,7 +1,10 @@
 name: Déploiement du site
 
-# Chaque push sur la branche publiée regénère version.json : les onglets déjà
-# ouverts détectent le nouvel identifiant et se rechargent tout seuls.
+# Prérequis, une seule fois : Settings → Pages → Build and deployment →
+# Source : GitHub Actions. Sans cela le job échoue sur « Get Pages site failed ».
+#
+# Ensuite, chaque push regénère version.json : les onglets déjà ouverts
+# détectent le nouvel identifiant et se rechargent tout seuls.
 on:
   push:
     branches:
@@ -28,25 +31,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Estampiller la version (identifiant du commit)
+      # On assemble _site plutôt que de publier le dépôt tel quel : seuls les
+      # fichiers du site sont mis en ligne, ni .git ni le workflow.
+      - name: Préparer le site et estampiller la version
         run: |
           set -euo pipefail
           BUILD="${GITHUB_SHA::12}"
           BUILT_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          sed -i "s|<meta name=\"build-id\" content=\"__BUILD_ID__\">|<meta name=\"build-id\" content=\"${BUILD}\">|" index.html
-          printf '{"build":"%s","builtAt":"%s"}\n' "$BUILD" "$BUILT_AT" > version.json
-          grep -q "content=\"${BUILD}\"" index.html || { echo "L'identifiant n'a pas été injecté dans index.html"; exit 1; }
-          cat version.json
+          mkdir -p _site
+          sed "s|<meta name=\"build-id\" content=\"__BUILD_ID__\">|<meta name=\"build-id\" content=\"${BUILD}\">|" index.html > _site/index.html
+          printf '{"build":"%s","builtAt":"%s"}\n' "$BUILD" "$BUILT_AT" > _site/version.json
+          cp .nojekyll _site/.nojekyll
+          grep -q "content=\"${BUILD}\"" _site/index.html || { echo "L'identifiant de version n'a pas été injecté dans index.html"; exit 1; }
+          cat _site/version.json
 
-      # enablement: active GitHub Pages sur le dépôt au premier déploiement,
-      # sans passer par Settings → Pages.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
       - id: deployment
         uses: actions/deploy-pages@v4

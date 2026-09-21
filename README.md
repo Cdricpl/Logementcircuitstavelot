@@ -3,8 +3,14 @@
 Page unique de présentation et de réservation de la maison de Stavelot pendant
 le Grand Prix de Belgique (Spa-Francorchamps).
 
-Tout le site tient dans `index.html` : styles, photos (en base64), carte
-Leaflet et scripts sont embarqués, il n'y a aucune dépendance à installer.
+Tout le site tient dans `index.html` : styles, photos (en base64) et scripts
+sont embarqués, il n'y a aucune dépendance à installer.
+
+Les bonnes adresses vivent dans le tableau `P` du script de fin de page :
+un objet par lieu, avec son nom (`n`), sa catégorie (`cat`, définie dans
+`CATS`), sa description (`d`), la distance depuis la maison (`g`, facultative)
+et la recherche envoyée à Google Maps (`q`). La page en déduit les catégories
+dépliantes et leurs compteurs : ajouter une adresse, c'est ajouter une ligne.
 
 ## Identité visuelle
 
@@ -17,9 +23,9 @@ suit plus la préférence clair/sombre du système.
 Les couleurs sont définies en variables CSS sur `:root`, au début de
 `index.html` : changer `--red` suffit à rehabiller tout le site.
 
-Les équipements listés (`<ul class="feat">`) reprennent uniquement ce que la
-page décrit déjà. Le Wi-Fi, le parking privé et le couchage pour quatre qui
-figurent sur les affiches n'y sont pas : à ajouter si c'est exact.
+Les équipements listés (`<ul class="feat">`) sont la seule liste
+d'équipements de la page : la section « La maison » ne les répète plus et
+laisse la place aux photos.
 
 ## Mettre le site à jour
 

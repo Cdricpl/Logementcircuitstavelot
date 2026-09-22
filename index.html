@@ -66,11 +66,13 @@ section{padding:4.75rem 0}
 .trip .trk{fill:none;stroke:var(--red);stroke-width:16;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:5200;stroke-dashoffset:5200;animation:draw 2.4s .2s ease-out forwards}
 .trip .path{fill:none;stroke:var(--night-ink);stroke-width:5;stroke-dasharray:4 14;stroke-linecap:round;opacity:0;animation:fade .6s 2.4s forwards}
 .trip .home{opacity:0;animation:fade .5s 2.8s forwards}
+.trip .walk{fill:none;stroke:#5FA8D3;stroke-width:5;stroke-dasharray:3 13;stroke-linecap:round}
+.trip .zone{opacity:0;animation:fade .5s 3.1s forwards}
 .trip text{font-family:var(--display);fill:var(--night-ink)}
 .trip .sm{fill:var(--night-muted)}
 @keyframes draw{to{stroke-dashoffset:0}}
 @keyframes fade{to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.trip .trk{animation:none;stroke-dashoffset:0}.trip .path,.trip .home{animation:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.trip .trk{animation:none;stroke-dashoffset:0}.trip .path,.trip .home,.trip .zone{animation:none;opacity:1}}
 
 /* ----- Le tour : la route, la voiture et les virages ----- */
 /* La route : une bande fixe en haut de l'ecran, au trace sinueux, que la
@@ -131,12 +133,6 @@ section{padding:4.75rem 0}
 .step b{display:block;font-family:var(--display);font-size:1.35rem;font-weight:600;margin:.4rem 0 .35rem}
 .step p{margin:0;color:var(--muted);font-size:.95rem}
 
-.dist{margin:3rem 0 0;padding:0;list-style:none;max-width:36rem}
-.dist li{display:flex;align-items:baseline;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--hair)}
-.dist li:first-child{border-top:1px solid var(--hair)}
-.dist li span{flex:1}
-.dist li b{font-family:var(--display);font-size:1.1rem;font-weight:600;color:var(--red);white-space:nowrap}
-.dist-note{color:var(--muted);font-size:.85rem;margin:.9rem 0 0}
 
 .prat{display:flex;flex-wrap:wrap;gap:.6rem 1.7rem;margin-top:1.8rem;color:var(--night-muted);font-size:.9rem}
 .prat span{display:flex;align-items:center;gap:.45rem}
@@ -195,19 +191,43 @@ section{padding:4.75rem 0}
 .cat-head:hover{background:color-mix(in srgb,var(--red) 8%,transparent)}
 .cat-ic{width:44px;height:44px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;flex:none}
 .cat-ic svg{width:22px;height:22px;fill:none;stroke:var(--red);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.cat-n{font-family:var(--display);font-size:1.45rem;font-weight:600;line-height:1.1}
+.cat-n{min-width:0;font-family:var(--display);font-size:1.45rem;font-weight:600;line-height:1.12}
 .cat-c{color:var(--muted);font-size:.9rem;margin-left:auto;white-space:nowrap}
 .cat-x{flex:none;width:22px;height:22px;transition:transform .2s ease;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .cat-head[aria-expanded="true"] .cat-x{transform:rotate(180deg)}
 .cat-head[aria-expanded="true"] .cat-n{color:var(--red)}
+/* sous 420 px, l'en-tete de categorie ne tient plus sur une ligne : on
+   resserre plutot que de laisser deborder */
+@media (max-width:420px){
+  .cat-head{gap:.6rem;padding:1rem .1rem}
+  .cat-ic{width:36px;height:36px}
+  .cat-ic svg{width:18px;height:18px}
+  .cat-n{font-size:1.15rem}
+  .cat-c{font-size:.72rem}
+  .cat-x{width:18px;height:18px}
+}
 .cat-body{padding:0 0 1rem 60px}
 @media (max-width:600px){.cat-body{padding-left:0}}
-.adr{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;padding:.7rem .8rem;border-radius:8px;
-  text-decoration:none;color:inherit}
-.adr:hover{background:var(--surface)}
-.adr b{font-family:var(--display);font-size:1.12rem;font-weight:600}
-.adr .d{color:var(--muted);font-size:.92rem;flex:1 1 100%;margin:0}
-.adr .g{font-family:var(--display);font-size:.85rem;font-weight:500;color:var(--red);white-space:nowrap}
+.adr{padding:.9rem 0;border-bottom:1px solid var(--hair)}
+.adr:last-child{border-bottom:0}
+.adr-top{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.adr-n{font-family:var(--display);font-size:1.15rem;font-weight:600;color:var(--ink);text-decoration:none}
+.adr-n:hover{color:var(--red)}
+.mode{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .6rem .25rem;border-radius:99px;
+  background:var(--surface);border:1px solid var(--line);white-space:nowrap;
+  font-family:var(--display);font-size:.78rem;font-weight:500;color:var(--night-muted)}
+.mode svg{width:15px;height:15px;flex:none;fill:none;stroke:var(--red);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.adr-d{margin:.4rem 0 0;color:var(--muted);font-size:.93rem}
+.adr-more{margin-top:.5rem;padding:0;background:none;border:0;cursor:pointer;color:var(--red);
+  font-family:var(--display);font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.adr-more:hover{color:var(--red-hi)}
+.adr-det{margin-top:.7rem;padding:.85rem 1rem;background:var(--surface);border-radius:8px;border-left:3px solid var(--red)}
+.adr-det .det{display:flex;gap:.6rem;margin:0 0 .5rem;font-size:.9rem;color:var(--muted);line-height:1.45}
+.adr-det .det:last-child{margin-bottom:0}
+.adr-det svg{width:16px;height:16px;flex:none;margin-top:.15rem;fill:none;stroke:var(--red);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.adr-det .liens{display:flex;gap:1.1rem;flex-wrap:wrap}
+.adr-det a{color:var(--ink);text-underline-offset:3px}
+.adr-det a:hover{color:var(--red)}
 .gp-note{margin-top:2rem;padding:1rem 1.2rem;border-left:4px solid var(--red);background:var(--surface);max-width:70ch;border-radius:0 8px 8px 0}
 
 /* ----- Reserver ----- */
@@ -259,7 +279,15 @@ footer{background:var(--night);color:var(--night-muted);font-size:.85rem;padding
             <circle cx="500" cy="912" r="9" fill="#fff"/>
             <text x="550" y="925" font-size="46" font-weight="600">La maison, Stavelot</text>
             <text x="760" y="790" font-size="34" class="sm">15 min à vélo</text>
-            <text x="760" y="832" font-size="34" class="sm">+ 35 min à pied</text>
+          </g>
+          <g class="zone">
+            <path class="walk" d="M800 690 C700 700 620 660 585 560 C555 470 575 395 560 330 C545 268 480 240 400 225 C340 214 300 205 285 228"/>
+            <circle cx="800" cy="690" r="19" fill="none" stroke="#fff" stroke-width="7"/>
+            <circle cx="800" cy="690" r="6" fill="#fff"/>
+            <text x="844" y="704" font-size="40" font-weight="600">Entrée Blanchimont</text>
+            <text x="330" y="470" font-size="34" class="sm">35 min à pied</text>
+            <rect x="70" y="185" width="232" height="88" rx="10" fill="#5FA8D3"/>
+            <text x="186" y="244" font-size="44" font-weight="700" text-anchor="middle" fill="#0E1519">Fan Zone</text>
           </g>
         </svg>
       </div>
@@ -286,16 +314,9 @@ footer{background:var(--night);color:var(--night-muted);font-size:.85rem;padding
     <p class="lede">Le week-end de la course, le trajet se fait à vélo puis à pied. Les vélos et les cadenas sont dans le garage.</p>
     <div class="steps">
       <div class="step"><span class="n">Étape 01</span><b>La maison</b><p>Départ à vélo depuis le jardin.</p></div>
-      <div class="step"><span class="n">Étape 02</span><b>15 min à vélo</b><p>Jusqu'au parking vélos, où ils restent la journée.</p></div>
-      <div class="step"><span class="n">Étape 03</span><b>35 min à pied</b><p>Du parking vélos à la Fan Zone.</p></div>
+      <div class="step"><span class="n">Étape 02</span><b>15 min à vélo</b><p>Jusqu'à l'entrée Blanchimont, où les vélos restent la journée.</p></div>
+      <div class="step"><span class="n">Étape 03</span><b>35 min à pied</b><p>De l'entrée Blanchimont à la Fan Zone.</p></div>
     </div>
-    <ul class="dist">
-      <li><span>Centre de Stavelot</span><b>5 min</b></li>
-      <li><span>Cascade de Coo</span><b>10 min</b></li>
-      <li><span>Spa, centre-ville</span><b>20 min</b></li>
-      <li><span>Hautes Fagnes</span><b>30 min</b></li>
-    </ul>
-    <p class="dist-note">Temps de trajet en voiture, hors week-end de course.</p>
   </div>
 </section>
 
@@ -333,7 +354,7 @@ footer{background:var(--night);color:var(--night-muted);font-size:.85rem;padding
   <div class="wrap">
     <p class="turn-kick"><b>Virage 05</b> · Blanchimont</p>
     <h2 class="script-h"><span class="swash">Nos bonnes adresses</span></h2>
-    <p class="lede">Ouvrez une catégorie, puis un lieu pour son itinéraire dans Google Maps.</p>
+    <p class="lede">Ouvrez une catégorie : le nom du lieu ouvre Google Maps, la pastille donne le trajet depuis la maison et « Voir + » affiche horaires, adresse et contacts.</p>
     <div class="cats" id="cats"></div>
     <div class="gp-note">Pendant le Grand Prix, beaucoup de restaurants augmentent leurs prix et réduisent leur carte. Pensez à réserver.</div>
   </div>
@@ -397,93 +418,123 @@ var sx=null;lb.addEventListener('touchstart',function(e){sx=e.touches[0].clientX
 lb.addEventListener('touchend',function(e){if(sx===null)return;var d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)openLb(cur+(d<0?1:-1));sx=null});
 
 /* ---------- Lieux ---------- */
-var CATS={maison:{n:"Maison et circuit",c:"#E63946"},manger:{n:"Manger",c:"#C97A1E"},boire:{n:"Boire un verre",c:"#6E5A9E"},courses:{n:"Courses",c:"#2F7FA6"},faire:{n:"À faire",c:"#2F7A52"}};
-var HOME_ADDR="Basse Levée 20, 4970 Stavelot";
-/* q : recherche (Google Maps et géolocalisation) ; a : position de repli ; street : rue attendue pour une adresse */
+var CATS=[["friterie","Friteries"],["brasserie","Brasseries et tavernes"],["resto","Restaurants"],["pizza","Pizzerias"],["asie","Sushi et asiatique"],["snack","Snack à emporter"],["verre","Où boire un verre"],["courses","Courses"],["faire","Activités"]];
+/* n nom · c categorie · m mode (pied/auto) · t duree · k distance
+   a adresse · h horaires · d description · p telephone · s site · g Google Maps */
 var P=[
- {n:"La maison",cat:"maison",d:HOME_ADDR,q:HOME_ADDR},
- {n:"Circuit de Spa-Francorchamps",cat:"maison",d:"Parking vélos à l'entrée, puis la Fan Zone à pied.",q:"Circuit de Spa-Francorchamps"},
- {n:"Friterie Sébastien",cat:"manger",d:"Ouverte 7 jours sur 7.",g:"à pied, 0,7 km",q:"Friterie Sébastien, Stavelot"},
- {n:"Friterie de Masta (Chez Sarah)",cat:"manger",d:"La meilleure du coin, burger maison.",g:"voiture, 3 km",q:"Friterie de Masta, Stavelot"},
- {n:"Les Doux Ragots",cat:"manger",d:"Friterie à La Gleize.",g:"voiture, 13 km",q:"Les Doux Ragots, La Gleize"},
- {n:"Le Val d'Amblève",cat:"manger",d:"Restaurant gastronomique, excellent.",g:"à pied, 0,3 km",q:"Le Val d'Amblève, Route de Malmedy 7, Stavelot"},
- {n:"Le Loup gourmand",cat:"manger",d:"Restaurant, très bon.",g:"à pied",q:"Le Loup Gourmand, Stavelot"},
- {n:"L'Épicurieux",cat:"manger",d:"Le midi uniquement, super bon.",q:"L'Épicurieux, Stavelot"},
- {n:"La Manufacture",cat:"manger",d:"Restaurant à Ster, super bon.",q:"La Manufacture, Ster, Francorchamps"},
- {n:"Le Vert de Pommier",cat:"manger",d:"Cuisine belge et terrasse, à La Gleize.",q:"Le Vert de Pommier, La Gleize"},
- {n:"La Métairie & son Auberge",cat:"manger",d:"Restaurant à Wanne.",q:"La Métairie, Wanne"},
- {n:"Ben's Pizza",cat:"manger",d:"Notre numéro un. Du vendredi au dimanche, à emporter, commande via Facebook.",q:"Ben's Pizza, Avenue du Doyard, Stavelot"},
- {n:"Pizzeria Casino",cat:"manger",d:"Bonne, mais très chère pendant le Grand Prix.",q:"Pizzeria Casino, Stavelot"},
- {n:"La Table de Figaro",cat:"manger",d:"Pizzeria correcte, jolie terrasse.",q:"La Table de Figaro, Stavelot"},
- {n:"Sushis Bar Malmedy",cat:"manger",d:"Très bon.",q:"Sushi Bar, Malmedy"},
- {n:"Palais de Chine",cat:"manger",d:"Chinois simple et efficace.",q:"Palais de Chine, Stavelot"},
- {n:"Pita Stavelot",cat:"manger",d:"Snack. Paiement en liquide uniquement.",q:"Pita, Stavelot"},
- {n:"Auberge Saint-Remacle",cat:"boire",d:"Taverne, idéale pour un verre.",g:"à pied",q:"Auberge Saint-Remacle, Stavelot"},
- {n:"Brasserie de Bellevaux",cat:"boire",d:"Brasse sa propre bière. Visite et dégustation le samedi et le dimanche.",q:"Brasserie de Bellevaux, Malmedy"},
- {n:"Scotch Inn",cat:"boire",d:"Grande sélection de bières, à Malmedy.",q:"Scotch Inn, Malmedy"},
- {n:"Val de Wanne",cat:"boire",d:"Belle vue. Luge et tubing sur place.",q:"Val de Wanne, Trois-Ponts"},
- {n:"Carrefour Market",cat:"courses",d:"Le supermarché le plus proche.",g:"à pied, 0,2 km",q:"Carrefour Market, Stavelot"},
- {n:"OKay",cat:"courses",d:"Boulangerie sur place. Pas de Visa ni Mastercard : liquide ou Apple Pay.",q:"OKay, Stavelot"},
- {n:"Fromagerie du Bairsoû",cat:"courses",d:"Le samedi. Fromages et charcuterie locaux.",q:"Fromagerie du Bairsoû"},
- {n:"Musée du circuit de Spa-Francorchamps",cat:"faire",d:"Dans l'Abbaye de Stavelot.",g:"à pied",q:"Abbaye de Stavelot"},
- {n:"Musée December 44",cat:"faire",d:"À La Gleize.",q:"December 44 Museum, La Gleize"},
- {n:"Cascade de Coo",cat:"faire",d:"Coo-Adventure juste à côté.",q:"Cascade de Coo"},
- {n:"Lac de Robertville",cat:"faire",d:"Balade autour du lac.",q:"Lac de Robertville"},
- {n:"Hautes Fagnes",cat:"faire",d:"Promenades dans la réserve, au départ du Signal de Botrange.",q:"Signal de Botrange"},
- {n:"Points de vue de Ster",cat:"faire",d:"Avec un saucisson et une bière.",q:"Ster, Francorchamps"},
- {n:"Piscine communale extérieure",cat:"faire",d:"À Stavelot, en plein air.",q:"Piscine de Stavelot"},
- {n:"Cinéma Le Versailles",cat:"faire",d:"À Malmedy.",q:"Cinéma Le Versailles, Malmedy"},
- {n:"Escape Challenge et The Wall",cat:"faire",d:"Escape game et escalade, à Intermills Malmedy.",q:"Intermills, Malmedy"},
- {n:"EVA Malmedy",cat:"faire",d:"Réalité virtuelle (pas encore testé).",q:"EVA, Malmedy"}
+ {n:"Friterie de Masta (Chez Sarah)",c:"friterie",m:"auto",t:"~6 min",k:"3 km",a:"Masta 10, 4970 Stavelot",h:"Mer→Dim, ~11h30-14h30 & 17h30-21h. Fermé lundi & mardi.",d:"Meilleure friterie du coin, hamburger maison excellent. Commande possible via l'application.",p:"+32 470 01 11 53",s:"https://www.facebook.com/profile.php?id=61550679990073",g:"https://www.google.com/maps/search/?api=1&query=Friterie%20de%20Masta%20%28Chez%20Sarah%29%20Stavelot&query_place_id=ChIJoWui7Rh7wEcRVzf83maciXg"},
+ {n:"Les Doux Ragots",c:"friterie",m:"auto",t:"~18 min",k:"13 km",a:"La Gleize 44, 4987 Stoumont",h:"Mer 17h30-20h30 · Jeu-Sam 19h-23h · Dim 11h30-20h30. Fermé lundi & mardi.",d:"Un cran au-dessus de la friterie classique.",p:"+32 80 51 12 69",s:"http://www.lesdouxragots.com/",g:"https://www.google.com/maps/search/?api=1&query=Les%20Doux%20Ragots%20%28Au%20doux%20ragot%29%20La%20Gleize&query_place_id=ChIJPzwlhStkwEcR3fC8AzGE0vo"},
+ {n:"Friterie Sébastien",c:"friterie",m:"pied",t:"~9 min",k:"0,7 km",a:"Av. Ferdinand Nicolay 15, Stavelot",h:"7j/7, 11h30-22h.",d:"Commande possible via l'application.",p:"+32 493 83 16 66",s:"http://www.friterie-sebastien.be/",g:"https://www.google.com/maps/search/?api=1&query=Friterie%20S%C3%A9bastien%20%28Chez%20S%C3%A9bastien%29%20Stavelot&query_place_id=ChIJUZLRdi5lwEcRD_osTNR5bPc"},
+ {n:"Brasserie de Bellevaux",c:"brasserie",m:"auto",t:"~12 min",k:"8 km",a:"Rue de la Foncenale 1, 4960 Malmedy (Bellevaux)",h:"Samedi & dimanche, 12h-18h.",d:"Vraie brasserie, on y brasse la bière : cadre très sympa, visite et dégustation.",p:"+32 456 08 58 56",s:"http://www.brasseriedebellevaux.be/",g:"https://www.google.com/maps/search/?api=1&query=Brasserie%20de%20Bellevaux%20Malmedy&query_place_id=ChIJQRRPJE96wEcRrFQp3YdAIbI"},
+ {n:"Auberge Saint-Remacle",c:"brasserie",m:"pied",t:"~9 min",k:"0,7 km",a:"Av. Ferdinand Nicolay 9, Stavelot",h:"Mardi→Dimanche, 10h-minuit. Fermé lundi.",d:"Taverne-brasserie : plats basiques mais qui fonctionnent bien, parfait pour un verre.",p:"+32 80 86 20 47",s:"https://www.facebook.com/aubergestrem/",g:"https://www.google.com/maps/search/?api=1&query=Auberge%20Saint-Remacle%20Stavelot&query_place_id=ChIJUZLRdi5lwEcR9HuwPYQi4mE"},
+ {n:"Le Val d'Amblève",c:"resto",m:"pied",t:"~4 min",k:"0,3 km",a:"Rte de Malmédy 7, Stavelot",h:"Hôtel-restaurant gastronomique, sur réservation.",d:"Excellent — le haut de gamme, si le budget suit.",p:"+32 80 28 14 40",s:"http://www.levaldambleve.com/",g:"https://www.google.com/maps/search/?api=1&query=Le%20Val%20d%27Ambl%C3%A8ve%20Stavelot&query_place_id=ChIJ-cLDQtR6wEcRAtQqMTGwou4"},
+ {n:"Le loup gourmand",c:"resto",m:"pied",t:"~9 min",k:"0,7 km",a:"Av. Ferdinand Nicolay 19, Stavelot",h:"Lun, jeu, ven, dim 12h-15h & 18h-23h · Sam 18h-22h. Fermé mardi & mercredi.",d:"Très bon.",p:"+32 80 86 29 95",s:"http://leloupgourmand.be/",g:"https://www.google.com/maps/search/?api=1&query=Le%20loup%20gourmand%20Stavelot&query_place_id=ChIJUZLRdi5lwEcRmZ5nfHu4ai0"},
+ {n:"L'Épicurieux",c:"resto",m:"pied",t:"~18 min",k:"1,5 km",a:"Pont de Cheneux 2, Stavelot",h:"Mer→Sam, 10h-16h (le midi uniquement). Fermé dim→mar.",d:"Super bon aussi — mais que le midi.",p:"+32 473 45 94 43",s:"https://www.facebook.com/L%C3%A9picurieux-797137567020665/",g:"https://www.google.com/maps/search/?api=1&query=L%27%C3%89picurieux%20Stavelot&query_place_id=ChIJpQYzHNZ6wEcR16lIz1tFO60"},
+ {n:"La Manufacture",c:"resto",m:"auto",t:"~13 min",k:"9 km",a:"Rue Mathieu Nisen 18, Ster (Stavelot)",h:"Jeu-Sam 18h30-21h30 · Dim 12h-14h. Fermé lun→mer.",d:"Super bon, je trouve.",p:"+32 87 22 13 26",s:"https://www.la-manufacture.be/",g:"https://www.google.com/maps/search/?api=1&query=La%20Manufacture%20Ster%20%28Stavelot%29&query_place_id=ChIJ2feCgx19wEcRvwngtrIz1J0"},
+ {n:"Le Vert de Pommier",c:"resto",m:"auto",t:"~18 min",k:"13 km",a:"La Gleize 17, 4987 Stoumont",h:"7j/7, ~12h-21h30.",d:"Cuisine belge généreuse, terrasse très sympa.",p:"+32 80 78 61 83",s:"http://vertdepommier.be/",g:"https://www.google.com/maps/search/?api=1&query=Le%20Vert%20de%20Pommier%20La%20Gleize&query_place_id=ChIJrXMQni5kwEcRBUaCxlAfSOM"},
+ {n:"La Métairie & son Auberge",c:"resto",m:"auto",t:"~12 min",k:"8 km",a:"Wanne 5, 4980 Trois-Ponts",h:"Mer-Sam 18h-23h · Dim 12h-15h & 18h-23h. Fermé lun-mar.",p:"+32 80 86 40 89",s:"http://www.lametairie.be/",g:"https://www.google.com/maps/search/?api=1&query=La%20M%C3%A9tairie%20%26%20son%20Auberge%20Wanne&query_place_id=ChIJq_-k6vtvwEcRl1gmtOrWsbs"},
+ {n:"Ben's Pizza",c:"pizza",m:"pied",t:"~11 min",k:"0,9 km",a:"Av. du Doyard 1/B, Stavelot",h:"Ven-Dim, 18h-21h. Fermé lun→jeu.",d:"Notre numéro un, une tuerie. À emporter uniquement, commande via leur page Facebook.",s:"https://www.facebook.com/BensPizzaStavelot/",g:"https://www.google.com/maps/search/?api=1&query=Ben%27s%20Pizza%20Stavelot&query_place_id=ChIJ70gB9yZlwEcRZjReIEzozOY"},
+ {n:"Pizzeria Casino",c:"pizza",m:"pied",t:"~9 min",k:"0,7 km",a:"Av. Ferdinand Nicolay 27, Stavelot",h:"Lun-mer & ven-dim 17h-22h. Fermé jeudi.",d:"Bonnes pizzas — mais très cher durant le Grand Prix.",p:"+32 80 86 23 57",s:"https://www.facebook.com/Pizzeria-Casino-Stavelot-649497258772946/",g:"https://www.google.com/maps/search/?api=1&query=Pizzeria%20Casino%20Stavelot&query_place_id=ChIJUZLRdi5lwEcRq4X9mC0CuPY"},
+ {n:"La Table de Figaro",c:"pizza",m:"pied",t:"~10 min",k:"0,8 km",a:"Pl. du Vinâve 4, Stavelot",h:"Mer-Sam 12h-14h & 18h-21h30 · Dim 12h-14h30 & 18h-21h30. Fermé lun-mar.",d:"Bon, mais sans plus. Jolie terrasse sur la place.",p:"+32 80 86 42 86",s:"http://www.restaurant-figaro.be/",g:"https://www.google.com/maps/search/?api=1&query=La%20Table%20de%20Figaro%20%28Le%20Figaro%29%20Stavelot&query_place_id=ChIJK3f00i9lwEcR_bmhKdl7Ai4"},
+ {n:"Sushis Bar Malmedy",c:"asie",m:"auto",t:"~13 min",k:"9 km",a:"Pl. du Pont Neuf 4, 4960 Malmedy",h:"Lun & mer-dim 17h-21h30. Fermé mardi.",d:"Très bon.",p:"+32 4 358 80 20",s:"https://www.sushisbar.be/",g:"https://www.google.com/maps/search/?api=1&query=Sushis%20Bar%20Malmedy%20Malmedy&query_place_id=ChIJbTSPmFV7wEcRDBy4amNkKEs"},
+ {n:"Palais de Chine",c:"asie",m:"auto",t:"~4 min",k:"1,3 km",a:"Av. Constant Grandprez 17, Stavelot",h:"Mar-sam 18h-22h · Dim 12h-14h & 18h-22h. Fermé lundi.",d:"Simple et efficace.",p:"+32 80 86 45 00",s:"https://www.facebook.com/chinestavelot.palaisde",g:"https://www.google.com/maps/search/?api=1&query=Palais%20de%20Chine%20%28le%20chinois%29%20Stavelot&query_place_id=ChIJJxuNQDplwEcRP6UlxtEusVs"},
+ {n:"Pita Stavelot",c:"snack",m:"pied",t:"~9 min",k:"0,7 km",a:"Av. Ferdinand Nicolay 5, Stavelot",h:"Lun-jeu & dim 11h-23h · Ven-sam 11h-minuit.",d:"Une pita simple et efficace. Paiement en espèces.",p:"+32 496 29 29 77",s:"https://www.takeaway.com/be-fr/menu/pita-stavelot",g:"https://www.google.com/maps/search/?api=1&query=Pita%20Stavelot%20Stavelot&query_place_id=ChIJI2_Y4_llwEcRG3CrGNG8UkI"},
+ {n:"Scotch Inn",c:"verre",m:"auto",t:"~13 min",k:"9 km",a:"Pl. Albert Ier 11, 4960 Malmedy",h:"Lun/mer/jeu 11h-23h · Ven 9h-2h · Sam 10h-2h · Dim 10h-23h. Fermé mardi.",d:"Grande sélection de bières, ambiance café traditionnel.",p:"+32 80 33 06 41",s:"https://www.facebook.com/scotchinn/",g:"https://www.google.com/maps/search/?api=1&query=Scotch%20Inn%20Malmedy&query_place_id=ChIJwVg6Vux7wEcRzrTzOQt3-7Y"},
+ {n:"Val de Wanne",c:"verre",m:"auto",t:"~13 min",k:"8 km",a:"Aisomont 70, 4980 Trois-Ponts",h:"7j/7, 10h-18h (centre de loisirs).",d:"Belle vue pour prendre un verre.",p:"+32 80 86 31 21",g:"https://www.google.com/maps/search/?api=1&query=Val%20de%20Wanne%20Wanne&query_place_id=ChIJvTWJIItvwEcR4E3S_5J9kYQ"},
+ {n:"Fromagerie du Bairsoû",c:"verre",m:"auto",t:"~10 min",k:"6 km",a:"Hénumont 3, 4980 Trois-Ponts",h:"Samedi 10h-18h uniquement.",d:"Pour un verre avec fromages et charcuterie locaux.",p:"+32 479 12 53 89",s:"https://www.facebook.com/fermedubairsou/",g:"https://www.google.com/maps/search/?api=1&query=Fromagerie%20du%20Bairso%C3%BB%20H%C3%A9numont&query_place_id=ChIJ3zY8s6d6wEcReXpd5ci_XTE"},
+ {n:"Carrefour Market",c:"courses",m:"pied",t:"~2 min",k:"0,2 km",a:"Av. des Démineurs 32, Stavelot",h:"Lun-Sam 8h-19h30 · Dim 8h-18h.",d:"Le plus proche, juste à côté de la maison.",p:"+32 80 88 02 00",g:"https://www.google.com/maps/search/?api=1&query=Carrefour%20Market%20Stavelot&query_place_id=ChIJFc-qUCxlwEcR5oygk2ktwT4"},
+ {n:"OKay",c:"courses",m:"pied",t:"~5 min",k:"0,4 km",a:"Rte de Malmédy 18B, Stavelot",h:"Lun-Sam 8h-19h30 · Dim 8h-12h30.",d:"Petit supermarché avec boulangerie. Pas de Visa ni Mastercard : cash ou Apple Pay.",p:"+32 80 88 09 05",g:"https://www.google.com/maps/search/?api=1&query=OKay%20Stavelot&query_place_id=ChIJmysQgNR6wEcRbx4cKP-fBvY"},
+ {n:"Musée December 44",c:"faire",m:"auto",t:"~18 min",k:"13 km",a:"Rue de l'Église, 4987 Stoumont",h:"Mer-Dim 10h-18h. Fermé lun-mar.",d:"Sur la Bataille des Ardennes — petit mais bien, environ une heure.",p:"+32 80 78 51 91",s:"http://www.december44.com/fr",g:"https://www.google.com/maps/search/?api=1&query=Mus%C3%A9e%20December%2044%20La%20Gleize&query_place_id=ChIJz2EYbCtkwEcRuEqC96qTrSk"},
+ {n:"Musée du circuit de Spa-Francorchamps",c:"faire",m:"pied",t:"~10 min",k:"0,8 km",a:"Cour de l'Abbaye, Stavelot",h:"7j/7, 10h-18h.",d:"Dans l'Abbaye de Stavelot — voitures et motos de course.",p:"+32 475 86 46 05",s:"http://www.musee-circuit.be/",g:"https://www.google.com/maps/search/?api=1&query=Mus%C3%A9e%20du%20circuit%20de%20Spa-Francorchamps%20Stavelot&query_place_id=ChIJN_aejKB8wEcRdqtYmV_gkVA"},
+ {n:"Cascade de Coo",c:"faire",m:"auto",t:"~10 min",k:"6 km",a:"Cascade de Coo, 4970 Stavelot",h:"Accès libre, parking payant.",d:"Les chutes d'eau, jolie balade.",p:"+32 80 68 46 39",s:"http://www.cascades-de-coo.be/",g:"https://www.google.com/maps/search/?api=1&query=Cascade%20de%20Coo%20Coo&query_place_id=ChIJ12oKjLllwEcRrI2lonClAxc"},
+ {n:"Coo-Adventure",c:"faire",m:"auto",t:"~10 min",k:"6 km",a:"Petit Coo 4, 4970 Stavelot",h:"7j/7, 9h-18h.",d:"Accrobranche, kayak, quad, vélo et scooter électriques, dropping.",p:"+32 80 68 91 33",s:"https://www.coo-adventure.com/",g:"https://www.google.com/maps/search/?api=1&query=Coo-Adventure%20Coo&query_place_id=ChIJIa8isKRlwEcRHF2A1hh1QLg"},
+ {n:"Val de Wanne",c:"faire",m:"auto",t:"~13 min",k:"8 km",a:"Aisomont 70, 4980 Trois-Ponts",h:"7j/7, 10h-18h.",d:"Luge et tubing, labyrinthe, belle vue.",p:"+32 80 86 31 21",g:"https://www.google.com/maps/search/?api=1&query=Val%20de%20Wanne%20Wanne&query_place_id=ChIJvTWJIItvwEcR4E3S_5J9kYQ"},
+ {n:"Lac de Robertville",c:"faire",m:"auto",t:"~25 min",k:"18 km",a:"Lac de Robertville, Waimes",h:"Accès libre, baignade payante en saison.",d:"Lac, plage, balades — château de Reinhardstein juste à côté.",g:"https://www.google.com/maps/search/?api=1&query=Lac%20de%20Robertville%20Robertville&query_place_id=ChIJX9I5OER_wEcRC639M7_v-P0"},
+ {n:"Hautes Fagnes",c:"faire",m:"auto",t:"~25 min",k:"18 km",a:"Rte de Botrange 131, 4950 Waimes",h:"Maison du Parc 10h-17h/18h, sentiers en accès libre.",d:"Promenades sur caillebotis, nature brute. Le toit de la Belgique.",p:"+32 80 44 03 00",s:"https://botrange.be/",g:"https://www.google.com/maps/search/?api=1&query=Hautes%20Fagnes%20Botrange&query_place_id=ChIJVwYVn7x2v0cRXch5yf51ryY"},
+ {n:"Points de vue de Ster",c:"faire",m:"auto",t:"~9 min",k:"5 km",a:"Ster, 4970 Stavelot (pas Ster-Francorchamps)",h:"Accès libre.",d:"Idéal pour se poser avec un bon saucisson et une bière devant la vue.",g:"https://www.google.com/maps/search/?api=1&query=50.393003,5.891642"},
+ {n:"Piscine communale extérieure",c:"faire",m:"pied",t:"~7 min",k:"0,5 km",a:"Quai des Vieux Moulins, Stavelot",h:"Horaires saisonniers (été), à vérifier sur place.",d:"Piscine de plein air, prix très doux.",p:"+32 471 04 84 91",s:"http://www.stavelot.be/",g:"https://www.google.com/maps/search/?api=1&query=Piscine%20communale%20ext%C3%A9rieure%20Stavelot&query_place_id=ChIJd0jUey1lwEcRgcMK26fd_nc"},
+ {n:"Cinéma Le Versailles",c:"faire",m:"pied",t:"~11 min",k:"0,9 km",a:"Rue Hottonruy 3, Stavelot",h:"Séances tous les jours sauf jeudi, après-midi et soir.",d:"Le plus vieux cinéma de Wallonie, le charme d'autrefois.",p:"+32 80 86 24 34",s:"https://www.cineversailles.be/",g:"https://www.google.com/maps/search/?api=1&query=Cin%C3%A9ma%20Le%20Versailles%20Stavelot&query_place_id=ChIJIUrcMjBlwEcRqWME9N1Xtx4"},
+ {n:"Escape Challenge",c:"faire",m:"auto",t:"~13 min",k:"9 km",a:"Av. de la Libération 1, 4960 Malmedy",h:"Mer-ven 13h-22h · sam-dim 10h-22h. Sur réservation.",d:"Escape game au site Intermills.",p:"+32 80 87 01 16",s:"https://www.escapechallengemalmedy.be/",g:"https://www.google.com/maps/search/?api=1&query=Escape%20Challenge%20%28Intermills%29%20Malmedy&query_place_id=ChIJTQPOQPJ7wEcRVJTk7YUQtLI"},
+ {n:"Escalade — The Wall",c:"faire",m:"auto",t:"~13 min",k:"9 km",a:"Av. de la Libération 1H, 4960 Malmedy",h:"Mar/jeu 16h-22h · mer 14h-22h · ven 16h-20h · dim 13h-19h. Fermé lun & sam.",d:"Salle d'escalade au site Intermills.",p:"+32 80 88 05 31",s:"https://thewall-escalade.be/",g:"https://www.google.com/maps/search/?api=1&query=Escalade%20%E2%80%94%20The%20Wall%20%28Intermills%29%20Malmedy&query_place_id=ChIJy1GcwAx7wEcRMY3UjKFP3mg"},
+ {n:"EVA Malmedy",c:"faire",m:"auto",t:"~14 min",k:"10 km",a:"Av. Monbijou 34, 4960 Malmedy",h:"Horaires variables, souvent après-midi et soir ; week-end dès 10h. Sur réservation.",d:"Réalité virtuelle en mouvement — jamais testé, mais on m'en dit du bien.",p:"+32 488 44 00 49",s:"https://www.eva.gg/fr-FR/locations/malmedy-4960",g:"https://www.google.com/maps/search/?api=1&query=EVA%20Malmedy%20%28VR%29%20Malmedy&query_place_id=ChIJ-ULcAAB7wEcR1shuSBWj2Bg"}
 ];
-function gm(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q)}
 
 /* ---------- Adresses par categorie ----------
    Une categorie depliante par famille de lieux, une seule ouverte a la fois.
-   Chaque adresse ouvre directement son itineraire dans Google Maps. */
+   Le nom ouvre Google Maps ; « Voir + » deplie horaires, adresse et contacts. */
+var PIED='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="13.6" cy="4.2" r="2"/><path d="M12.7 21.2l1.1-6.2-2.7-2.5.9-4.6 3.1 2.5 2.4.8"/><path d="M13.8 15l2.7 2.9.9 3.3"/></svg>',
+    AUTO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15.5v-3l1.8-4.2A2 2 0 0 1 6.6 7h10.8a2 2 0 0 1 1.8 1.3L21 12.5v3z"/><path d="M4.3 12.5h15.4"/><circle cx="7" cy="15.5" r="1.1"/><circle cx="17" cy="15.5" r="1.1"/></svg>',
+    PIN ='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6.5-5.6 6.5-10.4A6.5 6.5 0 0 0 5.5 10.6C5.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.4"/></svg>',
+    CLK ='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.3l3.2 2"/></svg>',
+    LNK ='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 13.5a4 4 0 0 0 5.7 0l2.6-2.6a4 4 0 0 0-5.7-5.7l-1.3 1.3"/><path d="M13.5 10.5a4 4 0 0 0-5.7 0l-2.6 2.6a4 4 0 0 0 5.7 5.7l1.3-1.3"/></svg>';
 var ICONS={
-  maison:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h14v9H5z"/><path d="M9.7 4v9M14.3 4v9M5 8.5h4.7M14.3 8.5H19"/></svg>',
-  manger:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v6a2.5 2.5 0 0 0 5 0V3"/><path d="M8.5 9v12"/><path d="M17.5 21V3c-1.9 1.6-2.6 3.6-2.6 6.2 0 1.5.9 2.4 2.6 2.4"/></svg>',
-  boire:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4h11l-1 5.2a4.6 4.6 0 0 1-9 0z"/><path d="M12 14v6"/><path d="M8.8 20h6.4"/></svg>',
+  friterie:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 9h9l-1.3 11.5H8.8z"/><path d="M9.4 9V4.6M12 9V3.6M14.6 9V4.6"/><path d="M7.9 12.8h8.2"/></svg>',
+  brasserie:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 6.5h9.5v13H5.5z"/><path d="M15 9.5h2.4a2.3 2.3 0 0 1 0 4.6H15"/><path d="M8.4 9.8v6.4M12.1 9.8v6.4"/></svg>',
+  resto:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v6a2.5 2.5 0 0 0 5 0V3"/><path d="M8.5 9v12"/><path d="M17.5 21V3c-1.9 1.6-2.6 3.6-2.6 6.2 0 1.5.9 2.4 2.6 2.4"/></svg>',
+  pizza:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2 20.4 19a17.5 17.5 0 0 1-16.8 0z"/><circle cx="10.3" cy="12" r="1.15"/><circle cx="14" cy="15.4" r="1.15"/></svg>',
+  asie:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.4 11.5h13.2a6.6 6.6 0 0 1-13.2 0z"/><path d="M3.4 19.6h13.2"/><path d="M14.6 8.6 21 3.4M16.2 10.3 21.6 6"/></svg>',
+  snack:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8.2h12l-1.1 12.3H7.1z"/><path d="M9.2 8.2V6a2.8 2.8 0 0 1 5.6 0v2.2"/></svg>',
+  verre:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 4h11l-1 5.2a4.6 4.6 0 0 1-9 0z"/><path d="M12 14v6"/><path d="M8.8 20h6.4"/></svg>',
   courses:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.8 4h2.1l2.4 10.4a2 2 0 0 0 2 1.6h7.1a2 2 0 0 0 1.9-1.5L20 7.8H6"/><circle cx="10" cy="19.4" r="1.3"/><circle cx="17.2" cy="19.4" r="1.3"/></svg>',
   faire:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.4 8.6-2 4.8-4.8 2 2-4.8z"/></svg>'
 };
 var box=document.getElementById('cats'),heads=[];
+function el(t,c){var x=document.createElement(t);if(c)x.className=c;return x}
+function ligne(ic,contenu){
+  var r=el('p','det');r.innerHTML=ic;
+  var s=el('span');if(typeof contenu==='string')s.textContent=contenu;else s.appendChild(contenu);
+  r.appendChild(s);return r;
+}
 function close(head){
   head.setAttribute('aria-expanded','false');
   document.getElementById(head.getAttribute('aria-controls')).hidden=true;
 }
-Object.keys(CATS).forEach(function(k,idx){
-  var places=P.filter(function(x){return x.cat===k});
-  if(!places.length)return;
-  var id='cat-'+k;
-  var cat=document.createElement('div');cat.className='cat';
+CATS.forEach(function(cat,idx){
+  var cle=cat[0],nom=cat[1],lieux=P.filter(function(x){return x.c===cle});
+  if(!lieux.length)return;
+  var id='cat-'+cle,bloc=el('div','cat');
 
-  var head=document.createElement('button');head.type='button';head.className='cat-head';
-  head.setAttribute('aria-controls',id);
-  head.innerHTML='<span class="cat-ic">'+ICONS[k]+'</span>'+
-    '<span class="cat-n"></span><span class="cat-c"></span>'+
+  var head=el('button','cat-head');head.type='button';head.setAttribute('aria-controls',id);
+  head.innerHTML='<span class="cat-ic">'+ICONS[cle]+'</span><span class="cat-n"></span><span class="cat-c"></span>'+
     '<svg class="cat-x" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
-  head.querySelector('.cat-n').textContent=CATS[k].n;
-  head.querySelector('.cat-c').textContent=places.length+(places.length>1?' adresses':' adresse');
+  head.querySelector('.cat-n').textContent=nom;
+  head.querySelector('.cat-c').textContent=lieux.length+(lieux.length>1?' adresses':' adresse');
 
-  var body=document.createElement('div');body.className='cat-body';body.id=id;
+  var body=el('div','cat-body');body.id=id;
 
-  places.forEach(function(x){
-    var a=document.createElement('a');a.className='adr';a.href=gm(x.q);a.target='_blank';a.rel='noopener';
-    var b=document.createElement('b');b.textContent=x.n;a.appendChild(b);
-    if(x.g){var g=document.createElement('span');g.className='g';g.textContent=x.g;a.appendChild(g)}
-    var d=document.createElement('p');d.className='d';d.textContent=x.d;a.appendChild(d);
-    body.appendChild(a);
+  lieux.forEach(function(x,i){
+    var item=el('div','adr'),top=el('div','adr-top');
+    var a=el('a','adr-n');a.href=x.g;a.target='_blank';a.rel='noopener';a.textContent=x.n;
+    var mode=el('span','mode');mode.innerHTML=(x.m==='pied'?PIED:AUTO);
+    mode.appendChild(document.createTextNode(x.t+' \u00b7 '+x.k));
+    top.appendChild(a);top.appendChild(mode);item.appendChild(top);
+    if(x.d){var d=el('p','adr-d');d.textContent=x.d;item.appendChild(d)}
+
+    var did=id+'-'+i,det=el('div','adr-det');det.id=did;det.hidden=true;
+    det.appendChild(ligne(PIN,x.a));
+    det.appendChild(ligne(CLK,x.h));
+    if(x.p||x.s){
+      var liens=el('span','liens');
+      if(x.p){var t=el('a');t.href='tel:'+x.p.replace(/[^+0-9]/g,'');t.textContent=x.p;liens.appendChild(t)}
+      if(x.s){var s=el('a');s.href=x.s;s.target='_blank';s.rel='noopener';s.textContent='Site';liens.appendChild(s)}
+      det.appendChild(ligne(LNK,liens));
+    }
+    var plus=el('button','adr-more');plus.type='button';plus.textContent='Voir +';
+    plus.setAttribute('aria-expanded','false');plus.setAttribute('aria-controls',did);
+    plus.onclick=function(){
+      var ouvert=plus.getAttribute('aria-expanded')==='true';
+      plus.setAttribute('aria-expanded',ouvert?'false':'true');
+      det.hidden=ouvert;plus.textContent=ouvert?'Voir +':'Voir \u2212';
+    };
+    item.appendChild(plus);item.appendChild(det);body.appendChild(item);
   });
 
   head.onclick=function(){
-    var open=head.getAttribute('aria-expanded')==='true';
+    var ouvert=head.getAttribute('aria-expanded')==='true';
     heads.forEach(close);
-    if(!open){head.setAttribute('aria-expanded','true');body.hidden=false}
+    if(!ouvert){head.setAttribute('aria-expanded','true');body.hidden=false}
   };
-
-  cat.appendChild(head);cat.appendChild(body);box.appendChild(cat);
+  bloc.appendChild(head);bloc.appendChild(body);box.appendChild(bloc);
   heads.push(head);
   if(idx===0){head.setAttribute('aria-expanded','true')}else{close(head)}
 });

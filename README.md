@@ -6,11 +6,22 @@ le Grand Prix de Belgique (Spa-Francorchamps).
 Tout le site tient dans `index.html` : styles, photos (en base64) et scripts
 sont embarqués, il n'y a aucune dépendance à installer.
 
-Les bonnes adresses vivent dans le tableau `P` du script de fin de page :
-un objet par lieu, avec son nom (`n`), sa catégorie (`cat`, définie dans
-`CATS`), sa description (`d`), la distance depuis la maison (`g`, facultative)
-et la recherche envoyée à Google Maps (`q`). La page en déduit les catégories
-dépliantes et leurs compteurs : ajouter une adresse, c'est ajouter une ligne.
+Les bonnes adresses viennent du PDF « Bonnes adresses Stavelot » et vivent
+dans le tableau `P` du script de fin de page, un objet par lieu :
+
+| Clé | Contenu |
+| --- | --- |
+| `n` | nom, affiché et cliquable vers Google Maps |
+| `c` | catégorie, définie dans `CATS` (l'ordre du tableau fait l'ordre à l'écran) |
+| `m` | `pied` ou `auto` — choisit l'icône de la pastille |
+| `t`, `k` | durée et distance depuis la maison |
+| `a`, `h` | adresse et horaires, dépliés par « Voir + » |
+| `d` | description, facultative |
+| `p`, `s` | téléphone et site, facultatifs |
+| `g` | lien Google Maps, avec son `query_place_id` |
+
+La page en déduit les catégories dépliantes et leurs compteurs : ajouter une
+adresse, c'est ajouter une ligne.
 
 ## Structure : un tour de circuit
 

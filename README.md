@@ -117,6 +117,34 @@ version. Le dispositif en place :
 Un onglet resté ouvert bascule donc sur la nouvelle version dans la minute qui
 suit le déploiement, sans que le visiteur ait à vider son cache.
 
+## L'aperçu quand on partage le lien
+
+Envoyé sur WhatsApp, iMessage, Facebook ou Messenger, le lien s'affiche en
+carte : l'image `apercu-partage.jpg` (1200 × 630, le format attendu par tous),
+le titre, la description et le nom d'hôte. Sans ces balises, le lien
+n'apparaîtrait que comme une adresse nue.
+
+Les balises Open Graph sont en tête d'`index.html`, avec deux contraintes :
+
+- **les adresses doivent être absolues.** Un robot d'aperçu ne résout pas un
+  lien relatif : `og:url` et `og:image` portent donc le domaine en entier. Le
+  déploiement le vérifie et échoue si l'une d'elles redevient relative. Si le
+  site déménage sur un autre domaine, ce sont les deux lignes à changer ;
+- **l'image doit rester légère.** WhatsApp ignore un aperçu trop lourd :
+  128 ko ici, pour une limite pratique autour de 300 ko.
+
+Le `noindex` de la page ne gêne pas ces aperçus : il s'adresse aux moteurs de
+recherche, pas aux robots d'aperçu, qui lisent la page directement.
+
+L'image reprend la photo de la terrasse, le titre manuscrit avec son trait
+rouge, l'accroche et le prix — le haut de la page, en somme, recomposé au
+format carte. La refaire, c'est réexporter ce montage en 1200 × 630.
+
+Attention : **WhatsApp et Facebook gardent l'aperçu en mémoire** pendant
+plusieurs jours. Après un changement d'image ou de texte, un lien déjà partagé
+peut continuer à montrer l'ancienne carte ; le débogueur de partage de Facebook
+force le rafraîchissement.
+
 ## Installer le site comme une application
 
 Le site est une **application web installable** (PWA) : sur Android comme sur

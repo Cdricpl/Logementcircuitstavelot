@@ -40,9 +40,12 @@ jobs:
           BUILT_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           mkdir -p _site
           sed "s|<meta name=\"build-id\" content=\"__BUILD_ID__\">|<meta name=\"build-id\" content=\"${BUILD}\">|" index.html > _site/index.html
+          sed "s|__BUILD_ID__|${BUILD}|g" sw.js > _site/sw.js
+          cp manifest.webmanifest icone-180.png icone-192.png icone-512.png icone-maskable-512.png _site/
           printf '{"build":"%s","builtAt":"%s"}\n' "$BUILD" "$BUILT_AT" > _site/version.json
           cp .nojekyll _site/.nojekyll
           grep -q "content=\"${BUILD}\"" _site/index.html || { echo "L'identifiant de version n'a pas été injecté dans index.html"; exit 1; }
+          grep -q "stavelot-${BUILD}" _site/sw.js || { echo "Le service worker n'a pas été estampillé"; exit 1; }
           cat _site/version.json
 
       - uses: actions/configure-pages@v5

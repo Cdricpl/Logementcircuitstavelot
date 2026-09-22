@@ -70,10 +70,10 @@ une section : numérotation, repères et compteur se recalculent seuls.
 Ces éléments viennent des maquettes et n'ont pas été confirmés :
 
 - les quatre distances en voiture du virage 02 ;
-- l'arrivée à 16 h, le départ à 10 h, les draps et le linge fournis ;
-- la chaise haute et le lit parapluie sur demande ;
-- « 4 voyageurs », alors que les chambres annoncent un lit double et un lit
-  simple.
+- l'arrivée à 16 h et le départ à 10 h ;
+- la salle de bain annonce « draps de bain fournis » : la note d'origine disait
+  « draps fournis », comprise ici comme les serviettes, le linge de lit étant
+  déjà annoncé dans les chambres.
 
 ## Identité visuelle
 
@@ -117,6 +117,44 @@ version. Le dispositif en place :
 Un onglet resté ouvert bascule donc sur la nouvelle version dans la minute qui
 suit le déploiement, sans que le visiteur ait à vider son cache.
 
+## Installer le site comme une application
+
+Le site est une **application web installable** (PWA) : sur Android comme sur
+iPhone, il peut être posé sur l'écran d'accueil et s'ouvre alors en plein
+écran, sans barre d'adresse, avec sa propre icône. Trois fichiers s'en
+chargent :
+
+| Fichier | Rôle |
+| --- | --- |
+| `manifest.webmanifest` | nom, icônes, couleurs et `display: standalone` |
+| `sw.js` | service worker : rend le site installable et consultable hors ligne |
+| `icone-180/192/512.png` | icônes de l'écran d'accueil (`icone-maskable-512` pour Android) |
+
+Les icônes sont dessinées dans `icone.svg` et `icone-maskable.svg` — la voiture
+en tête de sa trajectoire rouge, comme la route de navigation. Les retoucher,
+c'est modifier le SVG puis le réexporter aux quatre tailles ; la version
+*maskable* est le même dessin réduit à 80 %, pour survivre au rognage rond
+d'Android.
+
+Le service worker travaille en **réseau d'abord** : la page fraîche gagne
+toujours, le cache ne sert que de secours quand la connexion manque. Deux
+règles à ne pas perdre de vue si `sw.js` est retouché :
+
+- `version.json` n'est **jamais** mis en cache, sinon le rafraîchissement
+  automatique décrit plus haut devient aveugle aux nouvelles versions ;
+- le nom du cache porte l'identifiant du déploiement (`stavelot-<build>`) :
+  chaque mise en ligne crée un cache neuf et efface les précédents.
+
+Côté visiteur : sur Android, le navigateur propose l'installation et un bouton
+« Installer l'application » apparaît dans le pied de page. iOS ne propose rien
+de lui-même, la marche à suivre (Partager → « Sur l'écran d'accueil ») s'y
+affiche donc à la place. Une fois l'application lancée depuis l'écran
+d'accueil, les deux disparaissent.
+
+Attention enfin à la règle `[hidden]{display:none !important}` en tête de
+feuille de style : le bouton d'installation porte la classe `.cta`, qui pose
+`display:inline-flex` et couvrirait sinon l'attribut `hidden`.
+
 ## Première mise en ligne
 
 Dans les réglages du dépôt : **Settings → Pages → Build and deployment →
@@ -137,3 +175,8 @@ puis ouvrir http://localhost:8000. En local l'identifiant de `index.html` n'est
 pas remplacé : la page prend la première valeur lue dans `version.json` comme
 référence. Modifier ce fichier (par exemple `{"build":"test-2"}`) déclenche le
 rechargement automatique et permet de vérifier le mécanisme.
+
+Le service worker, lui, ne s'enregistre que sur `localhost` ou en HTTPS, et
+seulement si `sw.js` est servi avec le type `text/javascript` : un serveur qui
+renvoie tout en `text/html` le fait échouer silencieusement, sans rien casser
+d'autre dans la page.

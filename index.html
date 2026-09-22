@@ -6,6 +6,11 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="build-id" content="__BUILD_ID__">
 <meta name="theme-color" content="#080E11">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icone-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Stavelot GP">
 <title>Stavelot · Maison pour le Grand Prix de Belgique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +29,7 @@
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}   /* .cta pose display:inline-flex : sans ceci, hidden ne masque rien */
 html{scroll-padding-top:calc(56px + env(safe-area-inset-top,0px));-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.6;overflow-x:hidden}
 img{max-width:100%;display:block}
@@ -240,6 +246,11 @@ section{padding:4.75rem 0}
                    linear-gradient(45deg,#1E2C34 25%,transparent 25%,transparent 75%,#1E2C34 75%);
   background-size:18px 18px;background-position:0 0,9px 9px}
 footer{background:var(--night);color:var(--night-muted);font-size:.85rem;padding:1.5rem 0 2rem}
+.pied{display:flex;align-items:center;gap:1rem 1.5rem;flex-wrap:wrap}
+.pied p{margin:0}
+.pied .cta{margin-top:0;font-size:.95rem;padding:.6rem 1.1rem}
+.pied .cta svg{width:1.1em;height:1.1em;stroke-width:1.8}
+.pied .ios{flex:1 1 100%;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -383,7 +394,15 @@ footer{background:var(--night);color:var(--night-muted);font-size:.85rem;padding
 </section>
 </main>
 <div class="flag" aria-hidden="true"></div>
-<footer><div class="wrap">Maison privée à Stavelot, Basse Levée 20. Page accessible uniquement via lien.</div></footer>
+<footer>
+  <div class="wrap pied">
+    <p>Maison privée à Stavelot, Basse Levée 20. Page accessible uniquement via lien.</p>
+    <button class="cta ghost" id="installer" type="button" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11"/><path d="m7.6 10.4 4.4 4.4 4.4-4.4"/><path d="M4.5 16.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2"/></svg>
+      Installer l'application</button>
+    <p class="ios" id="astuce-ios" hidden>Sur iPhone : bouton Partager, puis « Sur l’écran d’accueil ».</p>
+  </div>
+</footer>
 
 <div class="lightbox" id="lb" role="dialog" aria-modal="true" aria-label="Photo agrandie">
   <button class="lb-close" type="button" aria-label="Fermer">×</button>
@@ -646,6 +665,37 @@ CATS.forEach(function(cat,idx){
   window.addEventListener('resize',refresh);
   window.addEventListener('load',refresh);
   refresh();
+})();
+</script>
+<script>
+/* ---------- Installation sur le telephone ----------
+   Le service worker rend le site installable et consultable hors ligne.
+   Sur Android, le navigateur propose l'installation : on capte l'invite
+   pour l'offrir depuis le pied de page. iOS ne la propose pas, on y
+   affiche donc la marche a suivre. */
+(function(){
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){
+      navigator.serviceWorker.register('sw.js')['catch'](function(){});
+    });
+  }
+  var bouton=document.getElementById('installer'),astuce=document.getElementById('astuce-ios'),invite=null;
+  var autonome=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault();invite=e;
+    if(bouton&&!autonome)bouton.hidden=false;
+  });
+  if(bouton)bouton.onclick=function(){
+    if(!invite)return;
+    invite.prompt();
+    invite.userChoice.then(function(){invite=null;bouton.hidden=true});
+  };
+  window.addEventListener('appinstalled',function(){if(bouton)bouton.hidden=true});
+
+  /* iOS : pas d'invite, on explique le geste */
+  var ios=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(ios&&!autonome&&astuce)astuce.hidden=false;
 })();
 </script>
 <script>

@@ -1,0 +1,17 @@
+{
+  "name": "Stavelot · Grand Prix de Belgique",
+  "short_name": "Stavelot GP",
+  "description": "La maison de Stavelot pour le Grand Prix : équipements, trajet jusqu'au circuit et nos bonnes adresses.",
+  "lang": "fr",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0E1519",
+  "theme_color": "#080E11",
+  "icons": [
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

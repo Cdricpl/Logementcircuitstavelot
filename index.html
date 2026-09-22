@@ -216,8 +216,9 @@ section{padding:4.75rem 0}
 .mode{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .6rem .25rem;border-radius:99px;
   background:var(--surface);border:1px solid var(--line);white-space:nowrap;
   font-family:var(--display);font-size:.78rem;font-weight:500;color:var(--night-muted)}
-.mode svg{width:15px;height:15px;flex:none;fill:none;stroke:var(--red);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.adr-d{margin:.4rem 0 0;color:var(--muted);font-size:.93rem}
+.mode svg{width:17px;height:17px;flex:none;fill:var(--red);stroke:none}
+.adr-a{margin:.3rem 0 0;color:var(--night-muted);font-size:.86rem}
+.adr-d{margin:.25rem 0 0;color:var(--muted);font-size:.93rem}
 .adr-more{margin-top:.5rem;padding:0;background:none;border:0;cursor:pointer;color:var(--red);
   font-family:var(--display);font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
 .adr-more:hover{color:var(--red-hi)}
@@ -228,6 +229,7 @@ section{padding:4.75rem 0}
 .adr-det .liens{display:flex;gap:1.1rem;flex-wrap:wrap}
 .adr-det a{color:var(--ink);text-underline-offset:3px}
 .adr-det a:hover{color:var(--red)}
+.note{margin:1.4rem 0 0;color:var(--muted);font-size:.95rem;max-width:70ch}
 .gp-note{margin-top:2rem;padding:1rem 1.2rem;border-left:4px solid var(--red);background:var(--surface);max-width:70ch;border-radius:0 8px 8px 0}
 
 /* ----- Reserver ----- */
@@ -281,13 +283,13 @@ footer{background:var(--night);color:var(--night-muted);font-size:.85rem;padding
             <text x="760" y="790" font-size="34" class="sm">15 min à vélo</text>
           </g>
           <g class="zone">
-            <path class="walk" d="M800 690 C700 700 620 660 585 560 C555 470 575 395 560 330 C545 268 480 240 400 225 C340 214 300 205 285 228"/>
+            <path class="walk" d="M800 690 C795 640 780 560 755 470 C730 390 700 330 675 285 C650 245 610 215 540 192 C450 165 370 175 302 201"/>
             <circle cx="800" cy="690" r="19" fill="none" stroke="#fff" stroke-width="7"/>
             <circle cx="800" cy="690" r="6" fill="#fff"/>
             <text x="844" y="704" font-size="40" font-weight="600">Entrée Blanchimont</text>
-            <text x="330" y="470" font-size="34" class="sm">35 min à pied</text>
-            <rect x="70" y="185" width="232" height="88" rx="10" fill="#5FA8D3"/>
-            <text x="186" y="244" font-size="44" font-weight="700" text-anchor="middle" fill="#0E1519">Fan Zone</text>
+            <text x="605" y="565" font-size="34" class="sm" text-anchor="end">35 min à pied</text>
+            <rect x="110" y="170" width="196" height="64" rx="9" fill="#5FA8D3"/>
+            <text x="208" y="214" font-size="37" font-weight="700" text-anchor="middle" fill="#0E1519">Fan Zone</text>
           </g>
         </svg>
       </div>
@@ -357,6 +359,7 @@ footer{background:var(--night);color:var(--night-muted);font-size:.85rem;padding
     <p class="lede">Ouvrez une catégorie : le nom du lieu ouvre Google Maps, la pastille donne le trajet depuis la maison et « Voir + » affiche horaires, adresse et contacts.</p>
     <div class="cats" id="cats"></div>
     <div class="gp-note">Pendant le Grand Prix, beaucoup de restaurants augmentent leurs prix et réduisent leur carte. Pensez à réserver.</div>
+    <p class="note">Envie de marcher ? Énormément de promenades tout autour : Ster, Coo, la vallée de l'Amblève, les Fagnes. Demandez-nous si vous voulez des itinéraires précis.</p>
   </div>
 </section>
 
@@ -462,9 +465,8 @@ var P=[
 /* ---------- Adresses par categorie ----------
    Une categorie depliante par famille de lieux, une seule ouverte a la fois.
    Le nom ouvre Google Maps ; « Voir + » deplie horaires, adresse et contacts. */
-var PIED='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="13.6" cy="4.2" r="2"/><path d="M12.7 21.2l1.1-6.2-2.7-2.5.9-4.6 3.1 2.5 2.4.8"/><path d="M13.8 15l2.7 2.9.9 3.3"/></svg>',
-    AUTO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 15.5v-3l1.8-4.2A2 2 0 0 1 6.6 7h10.8a2 2 0 0 1 1.8 1.3L21 12.5v3z"/><path d="M4.3 12.5h15.4"/><circle cx="7" cy="15.5" r="1.1"/><circle cx="17" cy="15.5" r="1.1"/></svg>',
-    PIN ='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6.5-5.6 6.5-10.4A6.5 6.5 0 0 0 5.5 10.6C5.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.4"/></svg>',
+var PIED='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12.8" cy="3.7" r="2.7"/><path d="M14.7 7.5a2.3 2.3 0 0 0-2.1-.2L9.3 8.6a2.3 2.3 0 0 0-1.35 1.45L7 13.3l2.2.65.8-2.75 1.4-.5-1.25 4.6-3.1 5.1 1.9 1.15 3.4-5.6 1.45 5.6 2.2-.55-1.7-6.45 1.15-3.95 1.05 2.3 2.1-.95-1.6-3.45a2.3 2.3 0 0 0-1.05-1.15z"/></svg>',
+    AUTO='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M6.2 5.2A2.2 2.2 0 0 1 8.3 3.7h7.4a2.2 2.2 0 0 1 2.1 1.5l1.5 4.3 1 .5c.7.35 1.1 1.05 1.1 1.8v3.3c0 .72-.58 1.3-1.3 1.3H3.9c-.72 0-1.3-.58-1.3-1.3v-3.3c0-.75.42-1.45 1.1-1.8l1-.5zM8 9.6h8l-1.1-3.1a.7.7 0 0 0-.66-.47H9.76a.7.7 0 0 0-.66.47z"/><circle cx="7" cy="17.6" r="2"/><circle cx="17" cy="17.6" r="2"/></svg>',
     CLK ='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.3l3.2 2"/></svg>',
     LNK ='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 13.5a4 4 0 0 0 5.7 0l2.6-2.6a4 4 0 0 0-5.7-5.7l-1.3 1.3"/><path d="M13.5 10.5a4 4 0 0 0-5.7 0l-2.6 2.6a4 4 0 0 0 5.7 5.7l1.3-1.3"/></svg>';
 var ICONS={
@@ -508,10 +510,10 @@ CATS.forEach(function(cat,idx){
     var mode=el('span','mode');mode.innerHTML=(x.m==='pied'?PIED:AUTO);
     mode.appendChild(document.createTextNode(x.t+' \u00b7 '+x.k));
     top.appendChild(a);top.appendChild(mode);item.appendChild(top);
+    var ad=el('p','adr-a');ad.textContent=x.a;item.appendChild(ad);
     if(x.d){var d=el('p','adr-d');d.textContent=x.d;item.appendChild(d)}
 
     var did=id+'-'+i,det=el('div','adr-det');det.id=did;det.hidden=true;
-    det.appendChild(ligne(PIN,x.a));
     det.appendChild(ligne(CLK,x.h));
     if(x.p||x.s){
       var liens=el('span','liens');

@@ -15,7 +15,8 @@ dans le tableau `P` du script de fin de page, un objet par lieu :
 | `c` | catégorie, définie dans `CATS` (l'ordre du tableau fait l'ordre à l'écran) |
 | `m` | `pied` ou `auto` — choisit l'icône de la pastille |
 | `t`, `k` | durée et distance depuis la maison |
-| `a`, `h` | adresse et horaires, dépliés par « Voir + » |
+| `a` | adresse, affichée sous le nom |
+| `h` | horaires, dépliés par « Voir + » |
 | `d` | description, facultative |
 | `p`, `s` | téléphone et site, facultatifs |
 | `g` | lien Google Maps, avec son `query_place_id` |

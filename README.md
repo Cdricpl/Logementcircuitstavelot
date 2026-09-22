@@ -27,13 +27,15 @@ class="turn">` est un virage, avec deux attributs lus par le script :
 | 05 · Blanchimont | `#adresses` | les bonnes adresses par catégorie |
 | 06 · Ligne d'arrivée | `#reserver` | WhatsApp, téléphone, informations pratiques |
 
-Une voiture avance avec le défilement, sur deux supports selon la largeur :
+Une route fixe en haut de l'écran porte toute la progression : asphalte
+sinueux, ligne médiane en pointillés, trajectoire rouge qui se remplit et
+voiture en tête, orientée sur la tangente. Les numéros de virage sont posés
+le long du tracé et cliquables, et le compteur à droite annonce le virage
+courant.
 
-- **au-dessus de 1024 px**, le rail de gauche — le tracé se remplit en rouge,
-  la voiture s'oriente sur la tangente, les numéros de virage sont cliquables
-  et le compteur affiche « virage courant / tour parcouru » ;
-- **en dessous**, le rail disparaît et la bande du haut devient la route :
-  ligne médiane en pointillés, trajectoire rouge et voiture en tête.
+Le tracé est **régénéré en pixels** à chaque redimensionnement, avec une courbe
+par portion d'environ 180 px : le trait garde partout la même épaisseur, et la
+route compte trois courbes sur un téléphone contre sept sur un grand écran.
 
 Ajouter ou retirer un virage ne demande rien d'autre que d'ajouter ou retirer
 une section : numérotation, repères et compteur se recalculent seuls.

@@ -12,6 +12,38 @@ un objet par lieu, avec son nom (`n`), sa catégorie (`cat`, définie dans
 et la recherche envoyée à Google Maps (`q`). La page en déduit les catégories
 dépliantes et leurs compteurs : ajouter une adresse, c'est ajouter une ligne.
 
+## Structure : un tour de circuit
+
+La page se parcourt comme un tour de Spa-Francorchamps. Chaque `<section
+class="turn">` est un virage, avec deux attributs lus par le script :
+`data-turn` (le numéro affiché) et `data-name` (le nom du virage).
+
+| Virage | Section | Contenu |
+| --- | --- | --- |
+| 01 · La Source | `#depart` | titre, prix, WhatsApp, tracé du circuit, chiffres clés |
+| 02 · Raidillon | `#trajet` | le trajet à vélo en trois étapes, distances en voiture |
+| 03 · Les Combes | `#maison` | les huit équipements |
+| 04 · Pouhon | `#visite` | les photos |
+| 05 · Blanchimont | `#adresses` | les bonnes adresses par catégorie |
+| 06 · Ligne d'arrivée | `#reserver` | WhatsApp, téléphone, informations pratiques |
+
+Deux repères suivent le défilement : la barre rouge en haut de l'écran et,
+au-dessus de 1180 px, le rail de gauche — un tracé qui se remplit, un point
+qui avance, les numéros de virage cliquables et un compteur « virage courant
+/ tour parcouru ». Ajouter ou retirer un virage ne demande rien d'autre que
+d'ajouter ou retirer une section : numérotation, repères et compteur se
+recalculent seuls.
+
+## À vérifier avant de diffuser le lien
+
+Ces éléments viennent des maquettes et n'ont pas été confirmés :
+
+- les quatre distances en voiture du virage 02 ;
+- l'arrivée à 16 h, le départ à 10 h, les draps et le linge fournis ;
+- la chaise haute et le lit parapluie sur demande ;
+- « 4 voyageurs », alors que les chambres annoncent un lit double et un lit
+  simple.
+
 ## Identité visuelle
 
 Reprise des affiches de location : fond nuit (`#0E1519`), rouge de marque

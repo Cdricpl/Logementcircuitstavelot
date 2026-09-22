@@ -65,15 +65,6 @@ voiture se décale du tracé :
 Ajouter ou retirer un virage ne demande rien d'autre que d'ajouter ou retirer
 une section : numérotation, repères et compteur se recalculent seuls.
 
-## Le petit-déjeuner en option
-
-Le prix affiché dans la section « Réservez » (`<div class="extra">`) est une
-proposition, à ajuster : **12 € par personne et par matin**, moitié prix
-jusqu'à 12 ans. L'estimation part d'un coût de denrées d'environ 8 € par
-personne (boulangerie ~3 €, charcuterie et fromages ~2,50 €, œufs, beurre et
-confitures ~1 €, jus, café et thé ~1,50 €), le reste couvrant les courses et
-la mise en place.
-
 ## À vérifier avant de diffuser le lien
 
 Ces éléments viennent des maquettes et n'ont pas été confirmés :

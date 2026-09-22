@@ -78,20 +78,30 @@ section{padding:4.75rem 0}
    chaque redimensionnement : aucune deformation du trait. */
 .road{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;height:44px;z-index:60;pointer-events:none;
   background:#101A20;border-bottom:1px solid var(--hair)}
-.road-svg{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible}
+/* Taille posee en pixels par le script, jamais en pourcentage ni par des
+   decalages : un SVG est un element remplace, et un left/right ou un top/bottom
+   ne l'etire pas, il garde sa taille intrinseque. Le viewBox reprend ensuite
+   exactement ces pixels, donc aucune mise a l'echelle. */
+.road-svg{position:absolute;left:0;top:0;display:block;overflow:visible}
 .r-bed{fill:none;stroke:#26353E;stroke-width:15;stroke-linecap:round;stroke-linejoin:round}
 .r-mid{fill:none;stroke:rgba(255,255,255,.26);stroke-width:1.6;stroke-dasharray:8 14;stroke-linecap:round}
 .r-run{fill:none;stroke:var(--red);stroke-width:3.5;stroke-linecap:round;filter:drop-shadow(0 0 5px rgba(230,57,70,.55))}
+.r-finish{opacity:.5;transition:opacity .3s ease,filter .3s ease}
+.road.done .r-finish{opacity:1;filter:drop-shadow(0 0 7px rgba(255,255,255,.6))}
 .road-marks a{position:absolute;transform:translate(-50%,-50%);padding:3px 5px;pointer-events:auto;text-decoration:none;
   font-family:var(--display);font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted)}
 .road-marks a:hover{color:var(--ink)}
 .road-marks a.on{color:var(--red)}
-.road-read{position:absolute;right:0;top:0;bottom:0;margin:0;display:flex;align-items:center;gap:.5rem;
-  padding:0 1rem;font-family:var(--display);line-height:1;background:#101A20;border-left:1px solid var(--hair)}
+/* largeur fixe : sans elle le compteur s'elargit quand le nom du virage
+   change, la route raccourcit en cours de route et la fin passe dessous */
+.road-read{position:absolute;right:0;top:0;bottom:0;width:220px;margin:0;display:flex;align-items:center;
+  justify-content:flex-end;gap:.5rem;padding:0 1rem;font-family:var(--display);line-height:1;
+  background:#101A20;border-left:1px solid var(--hair)}
+.road-read em{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .road-read b{font-size:1rem;font-weight:700;color:var(--ink)}
 .road-read b i{font-style:normal;color:var(--muted);font-size:.72rem;font-weight:500}
 .road-read em{font-style:normal;font-size:.66rem;text-transform:uppercase;letter-spacing:.13em;color:var(--red)}
-@media (max-width:560px){.road-read em{display:none}.road-marks{display:none}}
+@media (max-width:560px){.road-read{width:96px}.road-read em{display:none}.road-marks{display:none}}
 .car{position:absolute;left:0;top:0;width:15px;height:26px;transform:translate(-50%,-50%);will-change:transform;pointer-events:none}
 .car svg{display:block;width:100%;height:100%;overflow:visible}
 
@@ -217,6 +227,7 @@ footer{background:var(--night);color:var(--night-muted);font-size:.85rem;padding
 <nav class="road" id="road" aria-label="Les virages">
   <svg class="road-svg" preserveAspectRatio="none" aria-hidden="true">
     <path class="r-bed"/><path class="r-mid"/><path class="r-run"/>
+    <g class="r-finish"><rect x="-4" y="-8" width="8" height="16" rx="1" fill="#0E1519"/><rect x="-4" y="-8" width="4" height="4" fill="#F1F4F5"/><rect x="0" y="-4" width="4" height="4" fill="#F1F4F5"/><rect x="-4" y="0" width="4" height="4" fill="#F1F4F5"/><rect x="0" y="4" width="4" height="4" fill="#F1F4F5"/></g>
   </svg>
   <div class="road-marks" id="road-marks"></div>
   <span class="car car-road" aria-hidden="true"><svg viewBox="0 0 22 38" aria-hidden="true"><ellipse cx="11" cy="19" rx="13" ry="20" fill="#E63946" opacity=".16"/><rect x="0.5" y="7" width="5" height="7" rx="1.4" fill="#0B1216"/><rect x="16.5" y="7" width="5" height="7" rx="1.4" fill="#0B1216"/><rect x="0.5" y="25" width="5.5" height="8" rx="1.6" fill="#0B1216"/><rect x="16" y="25" width="5.5" height="8" rx="1.6" fill="#0B1216"/><path d="M11 1 14.6 11 14.6 27 16.4 34 5.6 34 7.4 27 7.4 11Z" fill="#F1F4F5"/><rect x="4" y="3.5" width="14" height="2.6" rx="1.3" fill="#E63946"/><rect x="3" y="31.5" width="16" height="3" rx="1.5" fill="#E63946"/><ellipse cx="11" cy="18" rx="2.5" ry="3.4" fill="#0E1519" opacity=".75"/></svg></span>
@@ -494,11 +505,12 @@ Object.keys(CATS).forEach(function(k,idx){
       run=road.querySelector('.r-run'),
       car=road.querySelector('.car-road'),
       read=road.querySelector('.road-read'),
+      fin=road.querySelector('.r-finish'),
       box=document.getElementById('road-marks'),
       numEl=document.getElementById('lap-num'),
       nameEl=document.getElementById('lap-name'),
       total=('0'+turns.length).slice(-2),
-      marks=[], L=0, W=0, H=0, cur=-1, queued=false;
+      marks=[], L=0, LC=0, W=0, H=0, cur=-1, done=null, queued=false;
 
   /* un trace sinueux : une courbe par portion, alternativement vers le haut
      et vers le bas, d'autant plus nombreuses que l'ecran est large */
@@ -515,13 +527,16 @@ Object.keys(CATS).forEach(function(k,idx){
   }
   function top(el){return el.getBoundingClientRect().top+window.pageYOffset}
   function maxScroll(){return Math.max(1,document.documentElement.scrollHeight-window.innerHeight)}
-  function point(pr){
-    var l=Math.max(0,Math.min(L,pr*L)),
-        a=bed.getPointAtLength(Math.max(0,l-6)),
+  function at(l){
+    l=Math.max(0,Math.min(L,l));
+    var a=bed.getPointAtLength(Math.max(0,l-6)),
         b=bed.getPointAtLength(Math.min(L,l+6)),
         c=bed.getPointAtLength(l);
     return {x:c.x,y:c.y,a:Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI+90};
   }
+  /* la course s'arrete juste avant le bout du trace : la voiture vient se
+     ranger devant le damier au lieu de se poser dessus */
+  function point(pr){return at(pr*LC)}
 
   turns.forEach(function(t){
     var a=document.createElement('a');
@@ -532,20 +547,25 @@ Object.keys(CATS).forEach(function(k,idx){
   });
 
   function build(){
-    var r=road.getBoundingClientRect();
-    if(!r.width)return;
-    var reserve=read?Math.round(read.getBoundingClientRect().width):0;
-    svg.style.right=reserve+'px';
-    W=Math.max(120,r.width-reserve);H=r.height;
-    svg.setAttribute('viewBox','0 0 '+W.toFixed(1)+' '+H.toFixed(1));
+    /* clientWidth et clientHeight donnent la boite interieure de la route,
+       celle a laquelle la voiture et les reperes sont positionnes. On y
+       reserve la largeur du compteur, plus 10 px pour le damier d'arrivee. */
+    var cw=road.clientWidth,ch=road.clientHeight;
+    if(!cw||!ch)return;
+    var reserve=(read?Math.round(read.getBoundingClientRect().width):0)+10;
+    W=Math.max(120,cw-reserve);H=ch;
+    svg.style.width=W+'px';svg.style.height=H+'px';
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
     var d=serpentin(W,H);
     bed.setAttribute('d',d);mid.setAttribute('d',d);run.setAttribute('d',d);
-    L=bed.getTotalLength();
+    L=bed.getTotalLength();LC=Math.max(10,L-13);
     run.style.strokeDasharray=L;
+    var e=at(L);
+    fin.setAttribute('transform','translate('+e.x.toFixed(1)+','+e.y.toFixed(1)+') rotate('+(e.a-90).toFixed(1)+')');
     var m=maxScroll();
     turns.forEach(function(t,i){
       var q=point(Math.min(1,Math.max(0,top(t)/m)));
-      marks[i].style.left=Math.min(W-10,Math.max(10,q.x))+'px';
+      marks[i].style.left=Math.min(W-28,Math.max(10,q.x))+'px';
       marks[i].style.top=(q.y>H/2?q.y-13:q.y+13)+'px';
     });
   }
@@ -553,8 +573,10 @@ Object.keys(CATS).forEach(function(k,idx){
     queued=false;
     if(!L)return;
     var pr=Math.min(1,Math.max(0,window.pageYOffset/maxScroll())),q=point(pr);
-    run.style.strokeDashoffset=L*(1-pr);
+    run.style.strokeDashoffset=L-pr*LC;
     car.style.transform='translate(-50%,-50%) translate('+q.x.toFixed(1)+'px,'+q.y.toFixed(1)+'px) rotate('+q.a.toFixed(1)+'deg)';
+    var fini=pr>0.995;
+    if(fini!==done){done=fini;road.classList.toggle('done',fini)}
     /* virage courant : le dernier dont le haut est passe le milieu de l'ecran,
        et le dernier virage des qu'on touche le bas de la page */
     var y=window.pageYOffset+window.innerHeight*0.5,k=0;

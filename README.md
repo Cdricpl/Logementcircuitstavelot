@@ -37,6 +37,19 @@ Le tracé est **régénéré en pixels** à chaque redimensionnement, avec une c
 par portion d'environ 180 px : le trait garde partout la même épaisseur, et la
 route compte trois courbes sur un téléphone contre sept sur un grand écran.
 
+Trois points de calage à respecter si ce bloc est retouché, faute de quoi la
+voiture se décale du tracé :
+
+- le SVG reçoit sa largeur et sa hauteur **en pixels** depuis le script, et son
+  `viewBox` reprend ces mêmes valeurs. Un `width:100%` ou un calage par
+  `left`/`right` ne dimensionne pas un élément remplacé : le tracé se retrouve
+  étiré alors que la voiture, elle, est posée en pixels ;
+- le compteur a une **largeur fixe**. Sans elle il s'élargit quand le nom du
+  virage change, la route raccourcit en cours de défilement et sa fin passe
+  sous le compteur ;
+- la course s'arrête 13 px avant le bout du tracé, pour que la voiture vienne
+  se ranger devant le damier d'arrivée au lieu de se poser dessus.
+
 Ajouter ou retirer un virage ne demande rien d'autre que d'ajouter ou retirer
 une section : numérotation, repères et compteur se recalculent seuls.
 

@@ -191,9 +191,10 @@ n'importe qui, et l'historique Git en garde trace même après suppression. Un
 mot de passe en JavaScript ne protégerait rien, le fichier étant dans la page.
 
 Le contrat est donc **chiffré avant d'entrer dans le dépôt**. `contrat.coffre`
-n'est qu'une suite d'octets : sans le mot de passe, il ne dit rien, même à qui
-le télécharge. `contrat.html` demande le mot de passe et déchiffre dans le
-navigateur ; le mot de passe ne quitte jamais l'appareil.
+n'est qu'une suite d'octets ; `contrat.html` demande le mot de passe et
+déchiffre dans le navigateur, sans que ce mot de passe quitte l'appareil. La
+solidité de l'ensemble tient au mot de passe choisi, et rien qu'à lui — voir
+plus bas ce que celui en place couvre réellement.
 
 | | |
 | --- | --- |
@@ -207,16 +208,44 @@ Trois règles à ne pas perdre de vue :
   `contrat.html` et dans le script de chiffrement. S'ils divergent, la clé ne
   tombe pas juste et le bon mot de passe est refusé ;
 - **le coût de ce calcul est délibéré.** Il ralentit d'autant celui qui
-  essaierait les mots de passe un par un sur une copie du fichier. C'est ce
-  qui rend l'attaque hors ligne coûteuse — mais cela ne sauve pas un mot de
-  passe court : un code à 4 chiffres, c'est 10 000 possibilités, quelques
-  secondes de calcul. Il faut au moins quatre ou cinq mots sans lien entre eux ;
+  essaierait les mots de passe un par un sur une copie du fichier — mais il
+  ne peut pas compenser un mot de passe court. Voir l'encadré ci-dessous ;
 - **le contrat en clair ne doit jamais être versionné.** `.gitignore` écarte
   `*.docx`, `*.doc` et `*.pdf`, et le déploiement échoue si un document en
   clair se glisse dans `_site` ou si `contrat.coffre` n'a pas l'en-tête attendu.
 
-Pour remplacer le contrat, chiffrer le nouveau `.docx` avec le même mot de
-passe et remplacer `contrat.coffre` ; rien d'autre ne bouge.
+### Ce que le mot de passe actuel protège, et ce qu'il ne protège pas
+
+Le coffre est fermé par un **code à 4 chiffres**, choisi par le propriétaire en
+connaissance de cause. Ce choix mérite d'être écrit noir sur blanc pour qui
+reprendrait ce dépôt :
+
+- contre quelqu'un qui tombe sur la page et essaie des codes à la main, il
+  tient : chaque tentative coûte une seconde de calcul ;
+- contre quelqu'un qui **télécharge `contrat.coffre` et l'attaque hors ligne**,
+  il ne tient pas. Un code à 4 chiffres, c'est 10 000 possibilités ; une carte
+  graphique courante les épuise en quelques secondes, quel que soit le nombre
+  de tours de PBKDF2. Passer à 10 millions de tours ne ferait que rendre
+  l'ouverture légitime pénible sans mettre l'attaque hors de portée.
+
+Autrement dit, la protection réelle repose aujourd'hui sur le fait que
+personne ne cherche ce fichier. Deux façons de renforcer cela, par ordre
+d'effet :
+
+1. **un mot de passe plus long** — quatre ou cinq mots sans lien entre eux
+   suffisent à rendre l'attaque hors ligne sans espoir. Il faut alors
+   rechiffrer le coffre (voir ci-dessous) ;
+2. **rendre le dépôt privé** — le site publié reste accessible, mais le
+   fichier n'est plus visible en parcourant GitHub, ce qui supprime la voie de
+   découverte la plus probable.
+
+Pour remplacer le contrat ou changer le mot de passe :
+
+```bash
+node outils-chiffrer.js chemin/vers/contrat.docx "<mot de passe>" contrat.coffre
+```
+
+puis committer le nouveau `contrat.coffre` ; rien d'autre ne bouge.
 
 Le propriétaire y accède de deux façons : le lien **« Espace propriétaire »**
 en bas de page, et un **raccourci du manifeste** — sur Android, un appui long

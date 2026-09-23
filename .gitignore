@@ -1,3 +1,9 @@
 .DS_Store
 Thumbs.db
 *.swp
+
+# Le contrat ne doit jamais etre versionne en clair : le depot est public.
+# Seul contrat.coffre, chiffre, a sa place ici.
+*.docx
+*.doc
+*.pdf

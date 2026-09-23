@@ -183,6 +183,47 @@ Attention enfin à la règle `[hidden]{display:none !important}` en tête de
 feuille de style : le bouton d'installation porte la classe `.cta`, qui pose
 `display:inline-flex` et couvrirait sinon l'attribut `hidden`.
 
+## Le contrat, dans un coffre chiffré
+
+Le contrat de location porte le numéro national et l'IBAN du propriétaire. Or
+**le dépôt et le site sont publics** : tout fichier déposé ici est lisible par
+n'importe qui, et l'historique Git en garde trace même après suppression. Un
+mot de passe en JavaScript ne protégerait rien, le fichier étant dans la page.
+
+Le contrat est donc **chiffré avant d'entrer dans le dépôt**. `contrat.coffre`
+n'est qu'une suite d'octets : sans le mot de passe, il ne dit rien, même à qui
+le télécharge. `contrat.html` demande le mot de passe et déchiffre dans le
+navigateur ; le mot de passe ne quitte jamais l'appareil.
+
+| | |
+| --- | --- |
+| Format | `STAVCOF1` · sel 16 o · iv 12 o · chiffré + marque d'authenticité |
+| Clé | PBKDF2-HMAC-SHA256, **1 000 000 tours**, 256 bits |
+| Chiffrement | AES-256-GCM — un mauvais mot de passe fait échouer le déchiffrement, il ne rend pas d'octets faux |
+
+Trois règles à ne pas perdre de vue :
+
+- **le nombre de tours doit être identique des deux côtés** : `TOURS` dans
+  `contrat.html` et dans le script de chiffrement. S'ils divergent, la clé ne
+  tombe pas juste et le bon mot de passe est refusé ;
+- **le coût de ce calcul est délibéré.** Il ralentit d'autant celui qui
+  essaierait les mots de passe un par un sur une copie du fichier. C'est ce
+  qui rend l'attaque hors ligne coûteuse — mais cela ne sauve pas un mot de
+  passe court : un code à 4 chiffres, c'est 10 000 possibilités, quelques
+  secondes de calcul. Il faut au moins quatre ou cinq mots sans lien entre eux ;
+- **le contrat en clair ne doit jamais être versionné.** `.gitignore` écarte
+  `*.docx`, `*.doc` et `*.pdf`, et le déploiement échoue si un document en
+  clair se glisse dans `_site` ou si `contrat.coffre` n'a pas l'en-tête attendu.
+
+Pour remplacer le contrat, chiffrer le nouveau `.docx` avec le même mot de
+passe et remplacer `contrat.coffre` ; rien d'autre ne bouge.
+
+Le propriétaire y accède de deux façons : le lien **« Espace propriétaire »**
+en bas de page, et un **raccourci du manifeste** — sur Android, un appui long
+sur l'icône de l'application propose directement « Contrat de location ». La
+page n'est pas indexée (`noindex`) et, une fois vue en ligne, reste consultable
+hors réseau.
+
 ## Première mise en ligne
 
 Dans les réglages du dépôt : **Settings → Pages → Build and deployment →

@@ -3,8 +3,8 @@
 Page unique de présentation et de réservation de la maison de Stavelot pendant
 le Grand Prix de Belgique (Spa-Francorchamps).
 
-Tout le site tient dans `index.html` : styles, photos (en base64) et scripts
-sont embarqués, il n'y a aucune dépendance à installer.
+La page tient dans `index.html` (styles et scripts compris) et les photos
+dans `photos/`. Il n'y a aucune dépendance à installer.
 
 Les bonnes adresses viennent du PDF « Bonnes adresses Stavelot » et vivent
 dans le tableau `P` du script de fin de page, un objet par lieu :
@@ -74,6 +74,42 @@ Ces éléments viennent des maquettes et n'ont pas été confirmés :
 - la salle de bain annonce « draps de bain fournis » : la note d'origine disait
   « draps fournis », comprise ici comme les serviettes, le linge de lit étant
   déjà annoncé dans les chambres.
+
+## Les photos
+
+Les photos étaient autrefois en base64 dans la page : 1,4 Mo à télécharger
+avant le moindre affichage, soit **29 secondes en 3G lente** — le réseau d'un
+week-end de Grand Prix dans les Ardennes. Elles vivent désormais dans
+`photos/`, chacune déclinée en plusieurs largeurs (400 à 1800 px), en WebP et
+en JPEG de secours. Le navigateur choisit la bonne via `srcset`/`sizes` et ne
+charge une vignette qu'à l'approche. La page seule pèse 22 ko compressée ;
+elle s'affiche en moins d'une seconde en 3G lente.
+
+| Nom | Où | Largeurs |
+| --- | --- | --- |
+| `maison-jardin` | bandeau du virage 04 et dernière vignette | 400 → 1800 |
+| `sejour`, `salle-a-manger`, `cuisine`, `chambre-parents`, `chambre-seconde` | mosaïque | 400 → 1400 |
+| `salle-de-bain`, `douche`, `wc` | mosaïque (portrait) | 400, 800 |
+
+Pour ajouter ou remplacer une photo : produire les variantes
+`photos/<nom>-<largeur>.webp` et `.jpg`, puis ajouter une ligne au tableau
+`photos` du script (`f` nom, `c` légende, `k` taille dans la grille, `w`/`h`
+dimensions d'origine, `t` largeurs disponibles). Les dimensions déclarées
+évitent que la page ne saute quand l'image arrive. Le déploiement échoue si
+une photo référencée manque, ou si du base64 revient dans la page.
+
+## Accessibilité
+
+Contrôlée aux seuils WCAG AA : tous les textes atteignent 4,5:1, toutes les
+cibles tactiles au moins 24 px, le focus clavier est visible partout et
+revient à la vignette quand la visionneuse se ferme, un lien « Aller au
+contenu » permet de sauter la route, et le mode « animation réduite » fige le
+tracé et la voiture.
+
+Le rouge de marque ne passe pas 4,5:1 dans les deux sens : trop sombre en
+petit texte sur le fond, trop clair sous du texte blanc. D'où deux nuances
+voisines, `--red-texte` et `--red-fond`, presque indiscernables à l'œil ; le
+`--red` d'origine reste celui des traits et des icônes.
 
 ## Identité visuelle
 

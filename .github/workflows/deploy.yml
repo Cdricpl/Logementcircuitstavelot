@@ -42,6 +42,7 @@ jobs:
           sed "s|<meta name=\"build-id\" content=\"__BUILD_ID__\">|<meta name=\"build-id\" content=\"${BUILD}\">|" index.html > _site/index.html
           sed "s|__BUILD_ID__|${BUILD}|g" sw.js > _site/sw.js
           cp manifest.webmanifest icone-180.png icone-192.png icone-512.png icone-maskable-512.png apercu-partage.jpg _site/
+          cp -r photos _site/photos
           # Le coffre n'est publie qu'une fois chiffre : sans lui, la page du
           # contrat reste a terre plutot que de faire echouer tout le deploiement.
           if [ -f contrat.coffre ]; then cp contrat.html contrat.coffre _site/; fi
@@ -50,6 +51,10 @@ jobs:
           grep -q "content=\"${BUILD}\"" _site/index.html || { echo "L'identifiant de version n'a pas été injecté dans index.html"; exit 1; }
           grep -q "stavelot-${BUILD}" _site/sw.js || { echo "Le service worker n'a pas été estampillé"; exit 1; }
           grep -q 'og:image" content="https://' _site/index.html || { echo "L'aperçu de partage doit pointer une adresse absolue"; exit 1; }
+          grep -q 'base64' _site/index.html && { echo "Des images sont reparties en base64 dans la page"; exit 1; } || true
+          for f in $(grep -o 'photos/[a-z0-9-]*\.\(webp\|jpg\)' _site/index.html | sort -u); do
+            [ -f "_site/$f" ] || { echo "Photo manquante : $f"; exit 1; }
+          done
           if [ -f _site/contrat.coffre ]; then
             head -c 8 _site/contrat.coffre | grep -q STAVCOF1 || { echo "contrat.coffre n'est pas un coffre chiffré"; exit 1; }
           else
